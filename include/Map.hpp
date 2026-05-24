@@ -53,8 +53,8 @@ extern Texture Tiles[3];
 
 void CreateMap();
 
-void RenderChunk(int x, int y);
+void RenderChunk(int x, int y, Vector2 camPos);
 
 void LoadTextures();
 
-void RenderMap(int camLeft, int camTop);
+void RenderMap(Vector2 pos);

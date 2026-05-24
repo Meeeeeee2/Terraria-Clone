@@ -15,7 +15,7 @@ bool noiseSetup = false;
 
 
 // World Gen Settings
-int averageSurfaceHeight = 50;
+int averageSurfaceHeight = 120;
 int surfaceVariance = 40;
 int dirtThickness = 5;
 
@@ -90,7 +90,7 @@ void CreateMap()
 	
 }
 
-void RenderChunk(int ChunkX, int ChunkY) {
+void RenderChunk(int ChunkX, int ChunkY, Vector2 camPos) {
 
 	if ((ChunkY * MAP_WIDTH + ChunkX) >= Map.size()){
 		
@@ -112,8 +112,8 @@ void RenderChunk(int ChunkX, int ChunkY) {
 			}
 			DrawTextureRec(Tiles[tileMap], 
 				tile, 
-				Vector2{ChunkX * CHUNK_SIZE * TILE_SIZE + float(x) * TILE_SIZE,
-				ChunkY * CHUNK_SIZE * TILE_SIZE + float(y) * TILE_SIZE},
+				Vector2{ (ChunkX * CHUNK_SIZE * TILE_SIZE + float(x) * TILE_SIZE) - camPos.x,
+				(ChunkY * CHUNK_SIZE * TILE_SIZE + float(y) * TILE_SIZE) - camPos.y},
 				WHITE);
 		}
 	}
@@ -133,11 +133,11 @@ void LoadTextures() {
 	
 
 }
-void RenderMap(int camLeft, int camTop) {
-	int startChunkX = camLeft / (CHUNK_SIZE * TILE_SIZE);
+void RenderMap(Vector2 pos) {
+	int startChunkX = pos.x / (CHUNK_SIZE * TILE_SIZE);
 	int endChunkX = startChunkX + (GetScreenWidth() / (CHUNK_SIZE * TILE_SIZE)) + 1;
 
-	int startChunkY = camTop / (CHUNK_SIZE * TILE_SIZE);
+	int startChunkY = pos.y / (CHUNK_SIZE * TILE_SIZE);
 	int endChunkY = startChunkY + (GetScreenHeight() / (CHUNK_SIZE * TILE_SIZE)) + 1;
 
 	for (int y = startChunkY; y <= endChunkY; y++)
@@ -145,7 +145,7 @@ void RenderMap(int camLeft, int camTop) {
 		for (int x = startChunkX; x <= endChunkX ; x++)
 		{
 
-			RenderChunk(x, y);
+			RenderChunk(x, y, pos);
 		}
 	}
 }
