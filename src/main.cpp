@@ -18,7 +18,7 @@ int main()
     while (!WindowShouldClose())
     {
         BeginDrawing();
-        ClearBackground({ 50,50,50,255 });
+        ClearBackground({ 92, 148, 252,255 });
 
 
 

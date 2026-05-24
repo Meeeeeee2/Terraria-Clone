@@ -2,7 +2,7 @@
 #include <cstdint>
 #include <vector>
 #include <raylib.h>
-#include <FastNoiseLite.h>
+
 
 constexpr int CHUNK_SIZE = 64;
 constexpr int MAP_WIDTH = 200;
@@ -41,14 +41,6 @@ struct Chunk
 	Tile tiles[CHUNK_SIZE * CHUNK_SIZE];
 
 	Chunk() {
-		tiles[0] = Tile(DIRT);
-		tiles[63] = Tile(STONE);
-		tiles[63 * 64] = Tile(GRASS);
-		tiles[64 * 64 - 1] = Tile(DIRT);
-		//tiles[1] = Tile(DIRT);
-		//tiles[3] = Tile(DIRT);
-		//tiles[63] = Tile(STONE);
-		//tiles[100] = Tile(GRASS);
 	}
 };
 
