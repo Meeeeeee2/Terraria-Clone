@@ -1,7 +1,7 @@
 #pragma once 
 #include <raylib.h>
 
-constexpr float GRAVITY = 1500;
+constexpr float GRAVITY = 800;
 
 struct pCamera {
 	Vector2 position;
@@ -10,13 +10,16 @@ struct pCamera {
 };
 struct Player {
 	
-	float moveSpeed = 1000;
-	float jumpPower = 800;
-	float maxFallSpeed = 1000;
+	const float moveSpeed = 200;
+	const float jumpPower = 450;
+	const float maxFallSpeed = 1000;
 	Texture spriteSheet;
 
 	Vector2 position;
 	float verticalVelocity = 0;
+	bool stationary = true;
+	int moveDirection = 0;
+	
 
 	void Update();
 	void Draw(Vector2 camPos);
@@ -25,4 +28,10 @@ struct Player {
 	bool Grounded();
 
 	Player();
+
+private:
+	
+	float animationTimer = 0;
+	const float animationDuration = 0.1f;
+	
 };

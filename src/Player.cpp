@@ -1,6 +1,7 @@
 #include "Player.hpp"
 #include "Map.hpp"
 #include <string>
+#include <iostream>
 
 void pCamera::Center(Vector2 center) {
 	float newX = center.x - (0.5 * GetScreenWidth());
@@ -29,18 +30,47 @@ void pCamera::Center(Vector2 center) {
 void Player::Draw(Vector2 camPos) {
 	int x = this->position.x - camPos.x;
 	int y = this->position.y - camPos.y;
-	// !!!!!!! FINISH ADDING THE PROPER SPRITE !!!!!!!!!!
-	Rectangle tile = { 0,0,30,46 };
-	tile.x = 4;
-	tile.y = 7 + 58;
+	
+	int idx;
 
-	// ENGULFED IS IN PROGRESS !!!!!
-	DrawRectangle(x, y, 48, 96, RED);
+	if (!this->Grounded()) {
+		idx = 1;
+	}
+	else if (this->stationary) {
+		idx = 0;
+	}
+	
+	else {
+		idx = (int)(animationTimer / animationDuration) + 2;
+	}
+	Rectangle frameRight = { 0,0,-32,46 };
+	frameRight.x = 4;
+	frameRight.y = 7 + 56 * idx;
+
+	Rectangle frameLeft = { 0,0,32,46 };
+	frameLeft.x = 4;
+	frameLeft.y = 7 + 56 * idx;
+
+	DrawTextureRec(this->spriteSheet, 
+		(this->moveDirection == 1 ? frameRight : frameLeft),
+		{(float)x,(float)y},
+		RAYWHITE);
+
 }
 
 void Player::Move(Vector2 translation) {
 	this->position.x += translation.x;
 	this->position.y += translation.y;
+
+	if (translation.x > 0) {
+		this->moveDirection = 1;
+		this->stationary = false;
+	}
+	else if (translation.x < 0) {
+		moveDirection = -1;
+		this->stationary = false;
+	}
+
 	if (this->position.x < 0)
 		this->position.x = 0;
 	if (this->position.y < 0)
@@ -62,6 +92,15 @@ void Player::Update() {
 
 	this->Move({ 0,this->verticalVelocity * dt });
 
+	if (this->moveDirection != 0) {
+		this->animationTimer += dt;
+		if (this->animationTimer > 14 * this->animationDuration) {
+			this->animationTimer = 0;
+		}
+	}
+	else {
+		this->animationTimer = 0;
+	}
 }
 
 void Player::Jump() {
@@ -71,10 +110,14 @@ void Player::Jump() {
 }
 
 Player::Player() {
+	std::cout << "Start Load Player\n";
 	std::string path = std::string(RESOURCES_PATH) + "Guide_Default.png";
 	Image img = LoadImage(path.c_str());
 
+
 	this->spriteSheet = LoadTextureFromImage(img);
 
+
 	UnloadImage(img);
+	std::cout << "LoadedPlayer\n";
 }

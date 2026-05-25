@@ -5,12 +5,15 @@
 #include <raymath.h>
 
 pCamera camera;
-Player player;
+
 
 int main()
 {
+    std::cout << "here\n";
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(1000, 1000, "Terraria");
+
+    Player player;
 
     SetExitKey(KEY_NULL);
 
@@ -37,10 +40,12 @@ int main()
         if (IsKeyDown(KEY_A)) {
             player.Move({ player.moveSpeed * -1 * dt,0});
         }
-        if (IsKeyDown(KEY_D)) {
+        else if (IsKeyDown(KEY_D)) {
             player.Move({  player.moveSpeed  * dt,0 });
         }
-
+        else {
+            player.stationary = true;
+        }
 
         player.Update();
         camera.Center(player.position);
