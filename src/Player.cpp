@@ -61,39 +61,48 @@ void Player::Draw(Vector2 camPos) {
 void Player::Move(Vector2 translation) {
 	this->position.x += translation.x;
 	
-	if (!this->CheckCollisions()) {
-		if (translation.x > 0) {
+	if (!this->CheckCollisions()) 
+	{
+		// sets flags for the sprite rendering 
+		if (translation.x > 0) 
+		{
 			this->moveDirection = 1;
 			this->stationary = false;
 		}
-		else if (translation.x < 0) {
+		else if (translation.x < 0) 
+		{
 			moveDirection = -1;
 			this->stationary = false;
 		}
-
+		// checks it is in bounds 
 		if (this->position.x < 0)
 			this->position.x = 0;
 	}
 	else {
-		this->position.x -= translation.x;
+			this->position.x -= translation.x;
 	}
 
-
+	//used for jumps and gravity 
 	this->position.y += translation.y;
 
-	if (!this->CheckCollisions()) {
+	if (!this->CheckCollisions()) 
+	{
 		if (this->position.y < 0)
 			this->position.y = 0;
+
+		this->grounded = false;
 	}
-	else {
+	else 
+	{
 		this->position.y -= translation.y;
 		this->verticalVelocity = 0;
+		this->grounded = true;
 	}
 	
 }
 
 bool Player::Grounded() {
-	return true;
+	return this->grounded;
 }
 
 void Player::Update() {
@@ -107,6 +116,7 @@ void Player::Update() {
 
 	this->Move({ 0,this->verticalVelocity * dt });
 
+	// player animation logic 
 	if (this->moveDirection != 0) {
 		this->animationTimer += dt;
 		if (this->animationTimer > 14 * this->animationDuration) {
@@ -116,12 +126,32 @@ void Player::Update() {
 	else {
 		this->animationTimer = 0;
 	}
+	// reset jump when on floor
+	if (this->Grounded()) {
+		this->jumpTimer = 0.0f;
+		this->canJump = true;
+	}
 }
 
-void Player::Jump() {
+void Player::Jump() {     
+	bool setVelocity = false;
+
+	
 	if (this->Grounded()) {
-		this->verticalVelocity = -1 * this->jumpPower;
+		setVelocity = true;
 	}
+	else {
+		if (canJump &&
+			jumpTimer > 0 &&
+			jumpTimer < this->maxJumpDuration) {
+			setVelocity = true;
+		}
+	}
+	if (setVelocity) {
+		this->verticalVelocity = -1 * this->jumpPower;
+		jumpTimer += GetFrameTime();
+	}
+	
 }
 
 Player::Player() {
@@ -163,7 +193,7 @@ bool Player::CheckCollisions() {
 	for (int y = top; y <= bottom; y++) {
 		for (int x = left; x <= right; x++) {
 			if (IsSolid(x, y)) {
-				Rectangle tile = { x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE };
+				Rectangle tile = {(float) x * TILE_SIZE, (float)y * TILE_SIZE, (float)TILE_SIZE, (float)TILE_SIZE };
 				if (CheckCollisionRecs(playerRec, tile)) {
 					return true;
 				}

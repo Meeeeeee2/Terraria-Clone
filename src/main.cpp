@@ -27,16 +27,14 @@ int main()
         // Input Handling
         // ---------
         float dt = GetFrameTime();
-
-        if (IsKeyDown(KEY_W)) {
-            player.Move({ 0, player.moveSpeed * -1  * dt});
-        }
-        if (IsKeyDown(KEY_S)) {
-            player.Move({ 0, player.moveSpeed * dt});
-        }
-
-        if (IsKeyPressed(KEY_SPACE)) {
+       
+        if (IsKeyDown(KEY_SPACE)) {
             player.Jump();
+        }
+        else {
+            if (!player.Grounded()) {
+                player.canJump = false;
+            }
         }
         if (IsKeyDown(KEY_A)) {
             player.Move({ player.moveSpeed * -1 * dt,0});
@@ -48,12 +46,48 @@ int main()
             player.stationary = true;
         }
 
+
+        
+        if (IsKeyDown(KEY_ONE)) {
+            player.selectedBlock = DIRT;
+        }
+        if (IsKeyDown(KEY_TWO)) {
+            player.selectedBlock = GRASS;
+        }
+        if (IsKeyDown(KEY_THREE)) {
+            player.selectedBlock = STONE;
+        }
+        if (IsKeyDown(KEY_FOUR)) {
+            player.selectedBlock = AIR;
+        }
+       
+
+        //--------------
+        // Mouse Input 
+        // -------------
+        Vector2 mousePos = GetMousePosition();
+        mousePos = Vector2Add(mousePos, camera.position);
+        mousePos.x = floor(mousePos.x / TILE_SIZE);
+        mousePos.y = floor(mousePos.y / TILE_SIZE);
+
+        if (IsMouseButtonDown(MouseButton::MOUSE_BUTTON_LEFT)) {
+            SetTile(mousePos.x, mousePos.y, player.selectedBlock);
+        }
+
+
+
+
+
+
         player.Update();
         camera.Center(player.position);
 
+
+
         BeginDrawing();
         ClearBackground({ 92, 148, 252,255 });
-        // background 
+
+        // Draws background 
         DrawRectangleGradientV(
             0,
             0,

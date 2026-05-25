@@ -24,6 +24,11 @@ struct BlockDefinition
 
 	bool solid;
 };
+
+struct TileVariant {
+	int atlasX, atlasY;
+};
+
 struct Tile 
 {
 	uint16_t blockID;
@@ -48,6 +53,8 @@ struct Chunk
 
 extern BlockDefinition gBlocks[256];
 
+extern TileVariant variants[16];
+
 extern std::vector<Chunk> Map;
 
 extern Texture Tiles[3];
@@ -65,4 +72,8 @@ void RenderMap(Vector2 pos);
 
 Tile& GetTile(int WTileX, int WTileY);
 
+void SetTile(int WTileX, int WTileY, BlockID type);
+
 bool IsSolid(int tileX, int tileY);
+
+int GetSurfaceHeight(int WorldX);

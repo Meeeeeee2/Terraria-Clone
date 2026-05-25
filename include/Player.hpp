@@ -1,7 +1,7 @@
 #pragma once 
 #include <raylib.h>
-
-constexpr float GRAVITY = 800;
+# include "Map.hpp"
+constexpr float GRAVITY = 1600;
 
 struct pCamera {
 	Vector2 position;
@@ -11,16 +11,18 @@ struct pCamera {
 struct Player {
 	
 	const float moveSpeed = 200;
-	const float jumpPower = 450;
+	const float jumpPower = 375;
 	const float maxFallSpeed = 1000;
 	
+	BlockID selectedBlock = DIRT;
+
 	Texture spriteSheet;
 
 	Vector2 position;
 	float verticalVelocity = 0;
 	bool stationary = true;
 	int moveDirection = 0;
-	
+	bool canJump = true;
 
 	void Update();
 	void Draw(Vector2 camPos);
@@ -35,13 +37,18 @@ struct Player {
 private:
 
 	const float animationDuration = 0.1f;
-
-
-	bool CheckCollisions();
-	const int width = 32;
+	const float maxJumpDuration = 0.2f;
+	
+	float jumpTimer = 0.0f;
+	
+	
+	const float width = 31.5f;
 	const int height = 44;
 
 	float animationTimer = 0;
+	bool grounded = true;
 	
+
+	bool CheckCollisions();
 	
 };
