@@ -60,21 +60,36 @@ void Player::Draw(Vector2 camPos) {
 
 void Player::Move(Vector2 translation) {
 	this->position.x += translation.x;
+	
+	if (!this->CheckCollisions()) {
+		if (translation.x > 0) {
+			this->moveDirection = 1;
+			this->stationary = false;
+		}
+		else if (translation.x < 0) {
+			moveDirection = -1;
+			this->stationary = false;
+		}
+
+		if (this->position.x < 0)
+			this->position.x = 0;
+	}
+	else {
+		this->position.x -= translation.x;
+	}
+
+
 	this->position.y += translation.y;
 
-	if (translation.x > 0) {
-		this->moveDirection = 1;
-		this->stationary = false;
+	if (!this->CheckCollisions()) {
+		if (this->position.y < 0)
+			this->position.y = 0;
 	}
-	else if (translation.x < 0) {
-		moveDirection = -1;
-		this->stationary = false;
+	else {
+		this->position.y -= translation.y;
+		this->verticalVelocity = 0;
 	}
-
-	if (this->position.x < 0)
-		this->position.x = 0;
-	if (this->position.y < 0)
-		this->position.y = 0;
+	
 }
 
 bool Player::Grounded() {
@@ -110,7 +125,7 @@ void Player::Jump() {
 }
 
 Player::Player() {
-	std::cout << "Start Load Player\n";
+
 	std::string path = std::string(RESOURCES_PATH) + "Guide_Default.png";
 	Image img = LoadImage(path.c_str());
 
@@ -119,5 +134,42 @@ Player::Player() {
 
 
 	UnloadImage(img);
-	std::cout << "LoadedPlayer\n";
+
+
+	this->position = { 10,10 };
+}
+
+Rectangle Player::GetPlayerRect() {
+	return {
+		this->position.x,
+		this->position.y,
+		(float)this->width,
+		(float)this->height
+	};
+}
+
+bool Player::CheckCollisions() {
+	// define bounds of where could be colliding 
+	int top = floor(this->position.y / TILE_SIZE);
+	int bottom = floor((this->position.y + this->height) / TILE_SIZE);
+	int left = floor(this->position.x / TILE_SIZE);
+	int right = floor((this->position.x + this->width) / TILE_SIZE);
+
+	
+
+	// check for collision
+	Rectangle playerRec = this->GetPlayerRect();
+
+	for (int y = top; y <= bottom; y++) {
+		for (int x = left; x <= right; x++) {
+			if (IsSolid(x, y)) {
+				Rectangle tile = { x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE };
+				if (CheckCollisionRecs(playerRec, tile)) {
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+	
 }

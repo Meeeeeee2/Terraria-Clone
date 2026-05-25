@@ -31,6 +31,14 @@ void SetupNoise() {
 	noiseSetup = true;
 }
 
+void DefineBlocks() 
+{
+	gBlocks[DIRT].solid = true;
+	gBlocks[STONE].solid = true;
+	gBlocks[GRASS].solid = true;
+	gBlocks[AIR].solid = false;
+}
+
 int GetSurfaceHeight(int WorldX) {
 	float n = noise.GetNoise((float)WorldX, 0.0f);
 
@@ -133,6 +141,7 @@ void LoadTextures() {
 	
 
 }
+
 void RenderMap(Vector2 pos) {
 	int startChunkX = pos.x / (CHUNK_SIZE * TILE_SIZE);
 	int endChunkX = startChunkX + (GetScreenWidth() / (CHUNK_SIZE * TILE_SIZE)) + 1;
@@ -148,4 +157,21 @@ void RenderMap(Vector2 pos) {
 			RenderChunk(x, y, pos);
 		}
 	}
+}
+
+Tile& GetTile(int WTileX, int WTileY) {
+	int chunkX = floor(WTileX / CHUNK_SIZE);
+	int localX = WTileX % CHUNK_SIZE;
+
+	int chunkY = floor(WTileY / CHUNK_SIZE);
+	int localY = WTileY % CHUNK_SIZE;
+
+	return Map[chunkY * MAP_WIDTH + chunkX]
+		.tiles[localY * CHUNK_SIZE + localX];
+}
+
+bool IsSolid(int tileX, int tileY) {
+	return gBlocks[
+		GetTile(tileX, tileY).blockID]
+		.solid;
 }

@@ -13,6 +13,7 @@ struct Player {
 	const float moveSpeed = 200;
 	const float jumpPower = 450;
 	const float maxFallSpeed = 1000;
+	
 	Texture spriteSheet;
 
 	Vector2 position;
@@ -26,12 +27,21 @@ struct Player {
 	void Move(Vector2 velocity);
 	void Jump();
 	bool Grounded();
+	Rectangle GetPlayerRect();
+
 
 	Player();
 
 private:
-	
-	float animationTimer = 0;
+
 	const float animationDuration = 0.1f;
+
+
+	bool CheckCollisions();
+	const int width = 32;
+	const int height = 44;
+
+	float animationTimer = 0;
+	
 	
 };

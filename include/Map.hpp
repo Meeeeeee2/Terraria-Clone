@@ -21,6 +21,8 @@ struct BlockDefinition
 {
 	uint16_t atlasX;
 	uint16_t atlasY;
+
+	bool solid;
 };
 struct Tile 
 {
@@ -53,8 +55,14 @@ extern Texture Tiles[3];
 
 void CreateMap();
 
+void DefineBlocks();
+
 void RenderChunk(int x, int y, Vector2 camPos);
 
 void LoadTextures();
 
 void RenderMap(Vector2 pos);
+
+Tile& GetTile(int WTileX, int WTileY);
+
+bool IsSolid(int tileX, int tileY);

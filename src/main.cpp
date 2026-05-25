@@ -9,7 +9,7 @@ pCamera camera;
 
 int main()
 {
-    std::cout << "here\n";
+
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(1000, 1000, "Terraria");
 
@@ -18,6 +18,7 @@ int main()
     SetExitKey(KEY_NULL);
 
     LoadTextures();
+    DefineBlocks();
     CreateMap();
 
     while (!WindowShouldClose())
@@ -62,7 +63,7 @@ int main()
             Color{ 180,220,255,255 }
         );
 
-        std::cout << camera.position.x << " " << camera.position.y << "\n";
+        
         RenderMap(camera.position);
         
         player.Draw(camera.position);
